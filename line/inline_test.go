@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	l "github.com/MasteryConnect/pipe/line"
+	l "github.com/Reisender/pipe/line"
 )
 
 func ExampleInline() {

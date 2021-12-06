@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/MasteryConnect/pipe/extras/sql"
-	"github.com/MasteryConnect/pipe/line"
-	"github.com/MasteryConnect/pipe/message"
+	"github.com/Reisender/pipe/extras/sql"
+	"github.com/Reisender/pipe/line"
+	"github.com/Reisender/pipe/message"
 
 	// in memory db driver for testing
 	"github.com/jmoiron/sqlx"

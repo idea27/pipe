@@ -3,7 +3,7 @@ package line_test
 import (
 	"testing"
 
-	l "github.com/MasteryConnect/pipe/line"
+	l "github.com/Reisender/pipe/line"
 )
 
 type ackable struct {

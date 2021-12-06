@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/MasteryConnect/pipe/message"
+	"github.com/Reisender/pipe/message"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )

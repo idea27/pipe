@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/MasteryConnect/pipe/message"
+	"github.com/Reisender/pipe/message"
 )
 
 func TestInsertDelta(t *testing.T) {

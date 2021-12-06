@@ -9,7 +9,7 @@ and start your own goroutines.
 # getting the library
 
 ```bash
-go get github.com/MasteryConnect/pipe/line
+go get github.com/Reisender/pipe/line
 ```
 
 # examples
@@ -114,8 +114,8 @@ A message is produced per line of input.
 package main
 
 import (
-  "github.com/MasteryConnect/pipe/line"
-  "github.com/MasteryConnect/pipe/x"
+  "github.com/Reisender/pipe/line"
+  "github.com/Reisender/pipe/x"
 )
 
 func main() {

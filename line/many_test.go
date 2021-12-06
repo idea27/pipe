@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	l "github.com/MasteryConnect/pipe/line"
+	l "github.com/Reisender/pipe/line"
 )
 
 func ExampleMany() {

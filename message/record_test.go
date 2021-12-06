@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/MasteryConnect/pipe/message"
+	"github.com/Reisender/pipe/message"
 )
 
 func TestRecordToMSI(t *testing.T) {

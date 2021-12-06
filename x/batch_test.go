@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	l "github.com/MasteryConnect/pipe/line"
-	"github.com/MasteryConnect/pipe/x"
-	"github.com/MasteryConnect/pipe/message"
+	l "github.com/Reisender/pipe/line"
+	"github.com/Reisender/pipe/x"
+	"github.com/Reisender/pipe/message"
 )
 
 func ExampleBatch_T_noTimeout() {

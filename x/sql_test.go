@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	l "github.com/MasteryConnect/pipe/line"
-	"github.com/MasteryConnect/pipe/message"
-	"github.com/MasteryConnect/pipe/x"
+	l "github.com/Reisender/pipe/line"
+	"github.com/Reisender/pipe/message"
+	"github.com/Reisender/pipe/x"
 )
 
 func ExampleSQL_T() {

@@ -1,7 +1,7 @@
 package jwx
 
 import (
-	l "github.com/MasteryConnect/pipe/line"
+	l "github.com/Reisender/pipe/line"
 )
 
 func ExampleSign() {

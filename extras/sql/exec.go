@@ -4,7 +4,7 @@ import (
 	dbsql "database/sql"
 	"fmt"
 
-	"github.com/MasteryConnect/pipe/message"
+	"github.com/Reisender/pipe/message"
 	"github.com/pkg/errors"
 )
 

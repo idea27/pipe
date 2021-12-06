@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/MasteryConnect/pipe/message"
+	"github.com/Reisender/pipe/message"
 )
 
 // Batch will take N number of messages and create a batch message

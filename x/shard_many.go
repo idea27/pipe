@@ -6,7 +6,7 @@ import (
 	"hash/crc32"
 	"sync"
 
-	l "github.com/MasteryConnect/pipe/line"
+	l "github.com/Reisender/pipe/line"
 )
 
 // Shard messages by a key e.g. two messages with the same key

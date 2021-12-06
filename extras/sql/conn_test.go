@@ -1,7 +1,7 @@
 package sql_test
 
 import (
-	"github.com/MasteryConnect/pipe/extras/sql"
+	"github.com/Reisender/pipe/extras/sql"
 )
 
 // ExampleConn shows how to create a database connection

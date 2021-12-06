@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	l "github.com/MasteryConnect/pipe/line"
-	"github.com/MasteryConnect/pipe/x"
+	l "github.com/Reisender/pipe/line"
+	"github.com/Reisender/pipe/x"
 )
 
 func ExampleProgress_T_knownTotal() {

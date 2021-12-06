@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	l "github.com/MasteryConnect/pipe/line"
+	l "github.com/Reisender/pipe/line"
 )
 
 func ExamplePipeline_new_w_chan() {

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/MasteryConnect/pipe/line"
+	"github.com/Reisender/pipe/line"
 )
 
 type foo struct {
