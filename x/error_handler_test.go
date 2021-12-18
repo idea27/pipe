@@ -19,8 +19,10 @@ func TestErrorHandler(t *testing.T) {
 			taskCallCount++
 			return nil, nil
 		},
-		ErrorHandler: func(in <-chan interface{}, out chan<- interface{}, errs chan<- error) {
-			ehCount++
+		NewErrorHandler: func() l.Tfunc {
+			return func(in <-chan interface{}, out chan<- interface{}, errs chan<- error) {
+				ehCount++
+			}
 		},
 	}
 
@@ -48,10 +50,12 @@ func TestErrorHandlerWithErrorNoTaskMsg(t *testing.T) {
 			taskCallCount++
 			return nil, err
 		},
-		ErrorHandler: func(in <-chan interface{}, out chan<- interface{}, errs chan<- error) {
-			for msg := range in {
-				ehCount++
-				ehInMsg = append(ehInMsg, msg)
+		NewErrorHandler: func() l.Tfunc {
+			return func(in <-chan interface{}, out chan<- interface{}, errs chan<- error) {
+				for msg := range in {
+					ehCount++
+					ehInMsg = append(ehInMsg, msg)
+				}
 			}
 		},
 	}
@@ -93,10 +97,12 @@ func TestErrorHandlerWithErrorWithTaskMsg(t *testing.T) {
 			taskCallCount++
 			return taskMsg, err
 		},
-		ErrorHandler: func(in <-chan interface{}, out chan<- interface{}, errs chan<- error) {
-			for msg := range in {
-				ehCount++
-				ehInMsg = append(ehInMsg, msg)
+		NewErrorHandler: func() l.Tfunc {
+			return func(in <-chan interface{}, out chan<- interface{}, errs chan<- error) {
+				for msg := range in {
+					ehCount++
+					ehInMsg = append(ehInMsg, msg)
+				}
 			}
 		},
 	}
@@ -146,10 +152,12 @@ func TestErrorHandlerRandomError(t *testing.T) {
 				return taskMsg, nil
 			}
 		},
-		ErrorHandler: func(in <-chan interface{}, out chan<- interface{}, errs chan<- error) {
-			for msg := range in {
-				ehCount++
-				ehInMsg = append(ehInMsg, msg)
+		NewErrorHandler: func() l.Tfunc {
+			return func(in <-chan interface{}, out chan<- interface{}, errs chan<- error) {
+				for msg := range in {
+					ehCount++
+					ehInMsg = append(ehInMsg, msg)
+				}
 			}
 		},
 	}

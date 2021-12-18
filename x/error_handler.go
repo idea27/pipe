@@ -7,8 +7,20 @@ import (
 )
 
 type ErrorHandler struct {
-	TaskToTry    l.InlineTfunc
-	ErrorHandler l.Tfunc
+	TaskToTry l.InlineTfunc
+
+	// NewErrorHandler  creates a new Tfunc to pair with
+	// the new "errIn" channel created for each call to T here.
+	// The Tfunc error handler is often and Embed of another
+	// pipeline. Since we are creating a new "in" channel, we
+	// need a new handler to range over that new channel.
+	// Generally, this only happens when this error handler is
+	// used inside of a line.Many, where T is called many times
+	// and generates a new "in" channel for each call. If the
+	// ErrorHandler is an Embed, it needs to be a new instance
+	// of the line, otherwise it will cause a race condition
+	// and one of the "in" channels might not get ranged over.
+	NewErrorHandler func() l.Tfunc
 }
 
 // Process a message through the 'try' function.
@@ -24,7 +36,7 @@ func (eh ErrorHandler) T(in <-chan interface{}, out chan<- interface{}, errs cha
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		eh.ErrorHandler(errIn, out, errs)
+		eh.NewErrorHandler()(errIn, out, errs)
 	}()
 
 	// For each message processed by the 'try' function
