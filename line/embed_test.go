@@ -142,6 +142,10 @@ func TestPipeline_EmbedMultiuseRace(t *testing.T) {
 	wg.Wait()
 
 	if errCnt != 2 {
-		t.Errorf("Embed race condition err count: want 1 got %d", errCnt)
+		t.Errorf("Embed race condition err count: want 2 got %d", errCnt)
+	}
+
+	if msgCnt != 2 {
+		t.Errorf("Embed race condition msg count: want 2 got %d", msgCnt)
 	}
 }
