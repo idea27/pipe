@@ -17,6 +17,10 @@ type tfuncEnum struct {
 
 // Line is the order of the steps in the pipe to make a pipeline.
 type Line struct {
+	// prevent Embed from causing a race condition
+	embedInMut sync.Mutex
+	embedIn    <-chan interface{}
+
 	p        Pfunc
 	pContext PfuncContext
 	t        []tfuncEnum

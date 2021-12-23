@@ -91,3 +91,57 @@ func TestPipeline_Embed(t *testing.T) {
 		t.Errorf("error: want 'foo error' got '%s'", err.Error())
 	}
 }
+
+func TestPipeline_EmbedMultiuseRace(t *testing.T) {
+	in1 := make(chan interface{}, 2)
+	in2 := make(chan interface{}, 2)
+	out := make(chan interface{})
+	errs := make(chan error)
+	var wg sync.WaitGroup
+
+	// collection counts to check later
+	msgCnt := 0
+	errCnt := 0
+
+	in1 <- "foo"
+	in1 <- "bar"
+	close(in1)
+	in2 <- "baz"
+	in2 <- "quux"
+	close(in2)
+
+	// start the errs range
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for range errs {
+			errCnt++
+		}
+	}()
+
+	// start the out range
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		defer close(errs)
+		for range out {
+			msgCnt++
+		}
+	}()
+
+	// the Embed should error if it is used multiple times with different in channels
+	pipe := l.New()
+
+	pipe.Embed(in1, out, errs)
+
+	// these two calls should produce errors
+	pipe.Embed(in2, out, errs)
+	pipe.Embed(in2, out, errs)
+
+	close(out)
+	wg.Wait()
+
+	if errCnt != 2 {
+		t.Errorf("Embed race condition err count: want 1 got %d", errCnt)
+	}
+}
