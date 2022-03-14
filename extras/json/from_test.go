@@ -85,3 +85,55 @@ func TestChunkStream(t *testing.T) {
 		t.Errorf("Expected block4 offset to be 61 but got (%d)", block.Offset)
 	}
 }
+
+func TestChunkStreamAndFrom(t *testing.T) {
+	// offsets:                    |2
+	stream := strings.NewReader(`  {"id":2,"name":"foo\""}`)
+	in := make(chan interface{})
+	out := make(chan interface{}, 1) // make a buffered channel
+	errs := make(chan error)
+
+	go func() {
+		defer close(in)
+		in <- stream // send the stream in to be chunked
+	}()
+
+	ChunkStream(in, out, errs) // run it
+
+	if len(errs) > 0 {
+		err := <-errs
+		t.Errorf("Received errors chunking stream with first error of: %s\n", err.Error())
+		return
+	}
+
+	if len(out) != 1 {
+		t.Errorf("Expected 1 blocks, only got %d", len(out))
+		return
+	}
+
+	type Foo struct {
+		ID   int `json:"id"`
+		Name string
+	}
+
+	fromFunc := FromAs(&Foo{})
+
+	// Block 1
+	block := (<-out).(StreamChunk)
+	if block.Offset != 2 {
+		t.Errorf("Expected block1 offset to be 2 but got (%d)", block.Offset)
+	}
+	var f Foo
+	var ok bool
+	fInt, err := fromFunc(block)
+	if err != nil {
+		t.Errorf("Received an error parsing the chunked json block1: %s\n", err.Error())
+	}
+	if f, ok = fInt.(Foo); !ok {
+		t.Errorf("Expected type Foo, isntead got: %T\n", fInt)
+	}
+	if f.ID != 2 {
+		t.Errorf("Expected ID of block1 to be 2 but got (%d)", f.ID)
+	}
+
+}
