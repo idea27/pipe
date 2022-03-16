@@ -9,6 +9,6 @@ type StreamChunk struct {
 }
 
 // String makes this struct a fmt.Stringer
-func (s *StreamChunk) String() string {
+func (s StreamChunk) String() string {
 	return string(s.Bytes)
 }
