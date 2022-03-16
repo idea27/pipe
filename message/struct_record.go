@@ -42,18 +42,36 @@ func NewStructRecord(strct interface{}, tagName ...string) (StructRecord, error)
 	// extract the tags
 	tags := []string{}
 	tagsToName := map[string]string{}
+
 	for i := 0; i < t.NumField(); i++ {
-		f := t.Field(i)
-		tagVal := f.Name
-		if tag != "" {
-			tagVal = f.Tag.Get(tag)
-		}
-		tags = append(tags, tagVal)
-		tagsToName[tagVal] = f.Name
+		tags = append(tags, extract(t.Field(i), tag, tagsToName)...)
 	}
 
 	rec := StructRecord{tagName: tag, record: strct, tags: tags, tagsToName: tagsToName}
 	return rec, nil
+}
+
+func extract(f reflect.StructField, tag string, tagsToName map[string]string) []string {
+	tags := []string{}
+	if f.Anonymous {
+		// is embedded so drop in and extract the fields on this
+		ft := f.Type
+		if ft.Kind() == reflect.Ptr {
+			ft = ft.Elem() // traverse the ptr to the non-ptr
+		}
+		for i := 0; i < ft.NumField(); i++ {
+			tags = append(tags, extract(ft.Field(i), tag, tagsToName)...)
+		}
+		return tags
+	}
+	tagVal := f.Name
+	if tag != "" {
+		tagVal = f.Tag.Get(tag)
+	}
+	tags = append(tags, tagVal)
+	tagsToName[tagVal] = f.Name
+
+	return tags
 }
 
 // In implements the Inner interface
