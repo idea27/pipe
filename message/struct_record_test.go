@@ -17,6 +17,12 @@ type TestStructWithoutTags struct {
 	Name string
 }
 
+type TestStructWithSomeTags struct {
+	ID    int    `db:"id"`
+	Name  string `db:"name"`
+	Phone string
+}
+
 type TestEmbeddedStructWithTags struct {
 	TestStructWithTags
 }
@@ -26,117 +32,141 @@ type TestEmbeddedStructPtrWithTags struct {
 }
 
 func TestStructRecord(t *testing.T) {
-	/*
-		t.Run("struct pointer", func(t *testing.T) {
-			foo := TestStructWithTags{1, "foo"}
-			_, err := message.NewStructRecord(&foo, "db")
-			if err != nil {
-				t.Error(err)
+	t.Run("struct pointer", func(t *testing.T) {
+		foo := TestStructWithTags{1, "foo"}
+		_, err := message.NewStructRecord(&foo, "db")
+		if err != nil {
+			t.Error(err)
+		}
+	})
+
+	t.Run("with tags", func(t *testing.T) {
+		foo := TestStructWithTags{1, "foo"}
+		r, err := message.NewStructRecord(foo, "db")
+		if err != nil {
+			t.Error(err)
+		}
+
+		wantKeys := []string{"id", "name"}
+		gotKeys := r.GetKeys()
+
+		wantVals := []interface{}{1, "foo"}
+		gotVals := r.GetVals()
+
+		for i, key := range wantKeys {
+			val, ok := r.Get(key)
+			if !ok {
+				t.Error("couldn't find key", key)
 			}
-		})
-	*/
-
-	/*
-		t.Run("with tags", func(t *testing.T) {
-			foo := TestStructWithTags{1, "foo"}
-			r, err := message.NewStructRecord(foo, "db")
-			if err != nil {
-				t.Error(err)
+			if !reflect.DeepEqual(val, wantVals[i]) {
+				t.Errorf("want %v got %v", wantVals[i], val)
 			}
+		}
 
-			wantKeys := []string{"id", "name"}
-			gotKeys := r.GetKeys()
+		if !reflect.DeepEqual(wantKeys, gotKeys) {
+			t.Errorf("want %v got %v", wantKeys, gotKeys)
+		}
 
-			wantVals := []interface{}{1, "foo"}
-			gotVals := r.GetVals()
+		if !reflect.DeepEqual(wantVals, gotVals) {
+			t.Errorf("want %v got %v", wantVals, gotVals)
+		}
+	})
 
-			for i, key := range wantKeys {
-				val, ok := r.Get(key)
-				if !ok {
-					t.Error("couldn't find key", key)
-				}
-				if !reflect.DeepEqual(val, wantVals[i]) {
-					t.Errorf("want %v got %v", wantVals[i], val)
-				}
+	t.Run("without tags", func(t *testing.T) {
+		foo := TestStructWithoutTags{1, "foo"}
+		r, err := message.NewStructRecord(foo)
+		if err != nil {
+			t.Error(err)
+		}
+
+		wantKeys := []string{"ID", "Name"}
+		gotKeys := r.GetKeys()
+
+		wantVals := []interface{}{1, "foo"}
+		gotVals := r.GetVals()
+
+		for i, key := range wantKeys {
+			val, ok := r.Get(key)
+			if !ok {
+				t.Error("couldn't find key", key)
 			}
-
-			if !reflect.DeepEqual(wantKeys, gotKeys) {
-				t.Errorf("want %v got %v", wantKeys, gotKeys)
+			if !reflect.DeepEqual(val, wantVals[i]) {
+				t.Errorf("want %v got %v", wantVals[i], val)
 			}
+		}
 
-			if !reflect.DeepEqual(wantVals, gotVals) {
-				t.Errorf("want %v got %v", wantVals, gotVals)
+		if !reflect.DeepEqual(wantKeys, gotKeys) {
+			t.Errorf("want %v got %v", wantKeys, gotKeys)
+		}
+
+		if !reflect.DeepEqual(wantVals, gotVals) {
+			t.Errorf("want %v got %v", wantVals, gotVals)
+		}
+	})
+
+	t.Run("with some tags", func(t *testing.T) {
+		foo := TestStructWithSomeTags{1, "foo", "555-5555"}
+		r, err := message.NewStructRecord(foo, "db")
+		if err != nil {
+			t.Error(err)
+		}
+
+		wantKeys := []string{"id", "name"}
+		gotKeys := r.GetKeys()
+
+		wantVals := []interface{}{1, "foo"}
+		gotVals := r.GetVals()
+
+		for i, key := range wantKeys {
+			val, ok := r.Get(key)
+			if !ok {
+				t.Error("couldn't find key", key)
 			}
-		})
-	*/
-
-	/*
-		t.Run("without tags", func(t *testing.T) {
-			foo := TestStructWithoutTags{1, "foo"}
-			r, err := message.NewStructRecord(foo)
-			if err != nil {
-				t.Error(err)
+			if !reflect.DeepEqual(val, wantVals[i]) {
+				t.Errorf("want %v got %v", wantVals[i], val)
 			}
+		}
 
-			wantKeys := []string{"ID", "Name"}
-			gotKeys := r.GetKeys()
+		if !reflect.DeepEqual(wantKeys, gotKeys) {
+			t.Errorf("want %v got %v", wantKeys, gotKeys)
+		}
 
-			wantVals := []interface{}{1, "foo"}
-			gotVals := r.GetVals()
+		if !reflect.DeepEqual(wantVals, gotVals) {
+			t.Errorf("want %v got %v", wantVals, gotVals)
+		}
+	})
 
-			for i, key := range wantKeys {
-				val, ok := r.Get(key)
-				if !ok {
-					t.Error("couldn't find key", key)
-				}
-				if !reflect.DeepEqual(val, wantVals[i]) {
-					t.Errorf("want %v got %v", wantVals[i], val)
-				}
+	t.Run("with embedded struct tags", func(t *testing.T) {
+		foo := TestEmbeddedStructWithTags{TestStructWithTags{1, "foo"}}
+		r, err := message.NewStructRecord(foo)
+		if err != nil {
+			t.Error(err)
+		}
+
+		wantKeys := []string{"ID", "Name"}
+		gotKeys := r.GetKeys()
+
+		wantVals := []interface{}{1, "foo"}
+		gotVals := r.GetVals()
+
+		for i, key := range wantKeys {
+			val, ok := r.Get(key)
+			if !ok {
+				t.Error("couldn't find key", key)
 			}
-
-			if !reflect.DeepEqual(wantKeys, gotKeys) {
-				t.Errorf("want %v got %v", wantKeys, gotKeys)
+			if !reflect.DeepEqual(val, wantVals[i]) {
+				t.Errorf("want %v got %v", wantVals[i], val)
 			}
+		}
 
-			if !reflect.DeepEqual(wantVals, gotVals) {
-				t.Errorf("want %v got %v", wantVals, gotVals)
-			}
-		})
-	*/
+		if !reflect.DeepEqual(wantKeys, gotKeys) {
+			t.Errorf("want %v got %v", wantKeys, gotKeys)
+		}
 
-	/*
-		t.Run("with embedded struct tags", func(t *testing.T) {
-			foo := TestEmbeddedStructWithTags{TestStructWithTags{1, "foo"}}
-			r, err := message.NewStructRecord(foo)
-			if err != nil {
-				t.Error(err)
-			}
-
-			wantKeys := []string{"ID", "Name"}
-			gotKeys := r.GetKeys()
-
-			wantVals := []interface{}{1, "foo"}
-			gotVals := r.GetVals()
-
-			for i, key := range wantKeys {
-				val, ok := r.Get(key)
-				if !ok {
-					t.Error("couldn't find key", key)
-				}
-				if !reflect.DeepEqual(val, wantVals[i]) {
-					t.Errorf("want %v got %v", wantVals[i], val)
-				}
-			}
-
-			if !reflect.DeepEqual(wantKeys, gotKeys) {
-				t.Errorf("want %v got %v", wantKeys, gotKeys)
-			}
-
-			if !reflect.DeepEqual(wantVals, gotVals) {
-				t.Errorf("want %v got %v", wantVals, gotVals)
-			}
-		})
-	*/
+		if !reflect.DeepEqual(wantVals, gotVals) {
+			t.Errorf("want %v got %v", wantVals, gotVals)
+		}
+	})
 
 	t.Run("with embedded struct ptr tags", func(t *testing.T) {
 		foo := TestEmbeddedStructPtrWithTags{&TestStructWithTags{1, "foo"}}

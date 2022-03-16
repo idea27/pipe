@@ -64,9 +64,14 @@ func extract(f reflect.StructField, tag string, tagsToName map[string]string) []
 		}
 		return tags
 	}
+
 	tagVal := f.Name
 	if tag != "" {
 		tagVal = f.Tag.Get(tag)
+		if tagVal == "" {
+			// don't add if there was not tag value for a specified tag
+			return tags
+		}
 	}
 	tags = append(tags, tagVal)
 	tagsToName[tagVal] = f.Name
